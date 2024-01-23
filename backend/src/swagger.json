@@ -1,0 +1,402 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Duty API documentation",
+		"version": "1.0.0",
+		"description": "Documentation for the Duty API"
+	},
+	"paths": {
+		"/duty": {
+			"get": {
+				"tags": ["Duty"],
+				"summary": "Query the DB and return the duty",
+				"parameters": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetDutyRequestParameters"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DutyResponseBody"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Fail - Record not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/RecordNotFoundError" }
+									]
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Fail - Inputs error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RequestInputError"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Fail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/DatabaseError" },
+										{ "$ref": "#/components/schemas/InternalServerError" }
+									]
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Duty"],
+				"summary": "Query and insert the duty record in the DB and return the inserted duty",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PostDutyRequestBody"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DutyResponseBody"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Fail - Record not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/RecordNotFoundError" }
+									]
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Fail - Inputs error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RequestInputError"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Fail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/DatabaseError" },
+										{ "$ref": "#/components/schemas/InternalServerError" }
+									]
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["Duty"],
+				"summary": "Query and update the duty records in the DB and return the updated duty",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PutDutyRequestBody"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DutyResponseBody"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Fail - Record not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/RecordNotFoundError" }
+									]
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Fail - Inputs error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RequestInputError"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Fail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/DatabaseError" },
+										{ "$ref": "#/components/schemas/InternalServerError" }
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/duties": {
+			"get": {
+				"tags": ["Duties"],
+				"summary": "Query the DB and return the duties",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DutiesResponseBody"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Fail - Record not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/RecordNotFoundError" }
+									]
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Fail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/DatabaseError" },
+										{ "$ref": "#/components/schemas/InternalServerError" }
+									]
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Duites"],
+				"summary": "Query, insert or update the duty records in the DB and return the latest duties.  \n The logic in this endpoint is more Domain specific: \n 1. If the duty id has a prefix 'temp-', it will treated as a new duty item and will be inserted into the DB \n 2. If the duty id is a UUID without any prefix, will try to update the record with that id if it exists. It WILL NOT be inserted into the DB if the id doesn't exist in the DB",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PostDutiesRequestBody"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DutiesResponseBody"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Fail - Inputs error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RequestInputError"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Fail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"oneOf": [
+										{ "$ref": "#/components/schemas/DatabaseError" },
+										{ "$ref": "#/components/schemas/InternalServerError" }
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"DutyResponseBody": {
+				"properties": {
+					"id": {
+						"type": "UUID"
+					},
+					"name": {
+						"type": "string"
+					}
+				}
+			},
+			"GetDutyRequestParameters": {
+				"required": ["id"],
+				"properties": {
+					"id": {
+						"type": "UUID",
+						"example": "bbbe6676-e3e4-4864-9c49-a47ed0cce78d"
+					}
+				}
+			},
+			"PostDutyRequestBody": {
+				"required": ["name"],
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "hello"
+					}
+				}
+			},
+			"PutDutyRequestBody": {
+				"required": ["id", "name"],
+				"properties": {
+					"id": {
+						"type": "UUID",
+						"example": "bbbe6676-e3e4-4864-9c49-a47ed0cce78d"
+					},
+					"name": {
+						"type": "string",
+						"example": "hello"
+					}
+				}
+			},
+			"DutiesResponseBody": {
+				"properties": {
+					"duty": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "UUID"
+								},
+								"name": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"PostDutiesRequestBody": {
+				"required": ["duties"],
+				"properties": {
+					"duties": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+
+			"RecordNotFoundError": {
+				"properties": {
+					"error": {
+						"type": "string",
+						"example": "Record not found."
+					}
+				}
+			},
+			"RequestInputError": {
+				"properties": {
+					"error": {
+						"type": "string",
+						"example": "Invalid input values. 'id' with Invalid value."
+					}
+				}
+			},
+			"InternalServerError": {
+				"properties": {
+					"error": {
+						"type": "string",
+						"example": "An unexpected server error was found."
+					}
+				}
+			},
+			"DatabaseError": {
+				"properties": {
+					"error": {
+						"type": "string",
+						"example": "A database error was found."
+					}
+				}
+			}
+		}
+	}
+}
